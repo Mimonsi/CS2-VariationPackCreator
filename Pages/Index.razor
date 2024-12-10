@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using System.Text.Json
+@using VariationPackCreator.Models
+@using VariationPackCreator.Components
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
@@ -13,18 +16,32 @@ else
     <button @onclick="ConfirmStartFromScratch" style="margin-top: 20px;">Start from Scratch</button>
     <div style="margin-top: 20px;" class="loaded-section">
         <h4>Loaded JSON data:</h4>
-        <pre>@LoadedJson</pre>
+        <PackComponent Pack="@CurrentPack" />
     </div>
 }
 
 @code {
+    private Pack CurrentPack { get; set; }
     private string LoadedJson = "";
     private bool ShowSetup = true;
 
-    private void LoadJson(string json)
+    private async Task LoadJson(string json)
     {
-        ShowSetup = false;
-        LoadedJson = json;
+        var options = new JsonSerializerOptions
+        {
+            Converters = { new ColorConverter() }
+        };
+
+        try
+        {
+            CurrentPack = JsonSerializer.Deserialize<Pack>(json, options);
+            ShowSetup = false;
+        }
+        catch (Exception ex)
+        {
+            // Fehlerbehandlung
+            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+        }
     }
 
     private async Task ConfirmStartFromScratch()

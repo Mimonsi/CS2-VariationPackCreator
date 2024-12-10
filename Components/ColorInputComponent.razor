@@ -1,9 +1,9 @@
-﻿@using VariationPackCreator.models
+﻿@using VariationPackCreator.Models
 @code {
-    [Parameter] public Color Color { get; set; }
+    [Parameter] public Color Color { get; set; }  // Mit [Parameter] markieren
 }
 
 <div>
     <label>@Color.Hex</label>
-    <input type="color" @bind="Color" />
+    <input type="color" @bind="Color.Hex" />
 </div>
