@@ -18,11 +18,15 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+      <_ContentIncludedByDefault Remove="presets\German Vehicle Pack.json" />
+      <_ContentIncludedByDefault Remove="presets\Realistic Global.json" />
+      <_ContentIncludedByDefault Remove="presets\Vancouver, Canada.json" />
+      <_ContentIncludedByDefault Remove="presets\Vanilla Rebalance.json" />
+      <_ContentIncludedByDefault Remove="presets\Vanilla.json" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="obj\Debug\net8.0\" />
-      <Folder Include="Uploads\" />
     </ItemGroup>
 
 </Project>
