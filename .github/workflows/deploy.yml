@@ -1,0 +1,39 @@
+name: Deploy Car Variation Packs
+
+on:
+  push:
+    branches:
+      - main  # Trigger beim Push auf den Branch `release`
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0'  # Passe die Version an deine Anwendung an
+
+      - name: Build Blazor App
+        run: dotnet publish -c Release -o release
+
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_KEY }}
+          source: ./release/*
+          target: /opt/carVariationpackCreator/  # Zielverzeichnis auf dem Server
+
+      - name: Reload Nginx
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_KEY }}
+          script: sudo systemctl reload nginx
