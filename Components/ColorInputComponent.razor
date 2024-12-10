@@ -1,0 +1,9 @@
+﻿@using VariationPackCreator.models
+@code {
+    [Parameter] public Color Color { get; set; }
+}
+
+<div>
+    <label>@Color.Hex</label>
+    <input type="color" @bind="Color" />
+</div>

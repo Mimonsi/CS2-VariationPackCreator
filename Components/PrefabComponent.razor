@@ -1,0 +1,11 @@
+﻿@using VariationPackCreator.models
+@code {
+    [Parameter] public Prefab Prefab { get; set; }
+}
+
+<h4>@Prefab.Name</h4>
+
+@foreach (var variation in Prefab.Variations)
+{
+    <VariationComponent Variation="@variation" />
+}

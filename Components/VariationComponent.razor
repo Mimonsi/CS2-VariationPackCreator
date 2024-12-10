@@ -1,0 +1,14 @@
+﻿@using VariationPackCreator.models
+@code {
+    [Parameter] public Variation Variation { get; set; }
+}
+
+<div>
+    <ColorInputComponent Color="@Variation.Color1" />
+    <ColorInputComponent Color="@Variation.Color2" />
+    <ColorInputComponent Color="@Variation.Color3" />
+    <div>
+        <label>Probability</label>
+        <input type="number" value="@Variation.Probability" />
+    </div>
+</div>
