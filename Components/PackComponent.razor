@@ -38,21 +38,6 @@
             </div>
         </div>
     }
-
-    <!--                         <select @bind="_selectedPrefabKey" class="form-select">
-                            <option value="" disabled selected>Select prefab to add</option>
-                            @foreach (var prefabKey in VanillaPack.Entries.Keys)
-                            {
-                                if (!Pack.Entries.ContainsKey(prefabKey))
-                                {
-                                    <option value="@prefabKey">@prefabKey</option>
-                                }
-                            }
-                        </select>
-                        <button class="btn btn-primary mt-2" @onclick="AddNewPrefab" disabled="@(string.IsNullOrEmpty(_selectedPrefabKey))">
-                            Add
-                        </button>  -->
-
     <div class="col">
         <div class="accordion" id="accordion-Add-Entry">
             <div class="accordion-item">
@@ -60,9 +45,8 @@
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-Add-Entry" aria-expanded="true" aria-controls="collapse-Add-Entry">
                         <!-- Dynamisches Bild basierend auf Auswahl -->
                         <div class="prefab-image-container">
-                            <img src="@GetSelectedPrefabImage()" alt="Add Entry" class="prefab-image-large" onerror="this.onerror=null;this.src='images/placeholder.jpg';" />
+                            <img src="@GetSelectedPrefabImage()" alt="Add Entry" class="prefab-image-large" onerror="this.onerror=null;this.src='images/placeholder.jpg';"/>
                         </div>
-                        <!-- Kleiner Text oben -->
                         <h5 class="prefab-text">Add Prefab</h5>
                     </button>
                 </h2>
