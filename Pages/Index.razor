@@ -14,7 +14,7 @@ else
     <button class="btn btn-danger" @onclick="ConfirmStartFromScratch" style="margin-top: 20px;">Start from Scratch</button>
     <button class="btn btn-primary" @onclick="DownloadPack" style="margin-top: 20px;">Download my Pack</button>
     <div style="margin-top: 20px;" class="loaded-section">
-        <PackComponent Pack="@CurrentPack" />
+        <PackComponent Pack="@CurrentPack" VanillaPack="@VanillaPack" />
     </div>
 
     <!-- JavaScript-Funktion zum Herunterladen der JSON-Datei -->
@@ -33,8 +33,35 @@ else
 
 @code {
     private Pack CurrentPack { get; set; }
+    private Pack VanillaPack { get; set; }
     private string LoadedJson = "";
     private bool ShowSetup = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAvailablePrefabs();
+    }
+
+    private async Task LoadAvailablePrefabs()
+    {
+        var options = new JsonSerializerOptions
+        {
+            Converters = { new ColorConverter() },
+            PropertyNameCaseInsensitive = true
+        };
+
+        try
+        {
+            var json = await Http.GetStringAsync("presets/Vanilla.json");
+            VanillaPack = JsonSerializer.Deserialize<Pack>(json, options);
+        }
+        catch (Exception ex)
+        {
+            // Fehlerbehandlung
+            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+        }
+
+    }
 
     private async Task LoadJson(string json)
     {

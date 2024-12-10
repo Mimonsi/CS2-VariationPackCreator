@@ -2,6 +2,8 @@
 
 @code {
     [Parameter] public Pack Pack { get; set; }
+    private string _selectedPrefabKey = string.Empty; // Für das Dropdown
+    [Parameter] public Pack VanillaPack { get; set; }
 }
 
 <h3>
@@ -12,7 +14,7 @@
     @foreach (var prefabEntry in Pack.Entries)
     {
         <div class="col">
-            <div class="accordion" id="accordionExample">
+            <div class="accordion" id="accordion-@prefabEntry.Key">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-@prefabEntry.Key">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@prefabEntry.Key" aria-expanded="true" aria-controls="collapse-@prefabEntry.Key">
@@ -24,7 +26,7 @@
                             <h5 class="prefab-text">@prefabEntry.Key</h5>
                         </button>
                     </h2>
-                    <div id="collapse-@prefabEntry.Key" class="accordion-collapse collapse" aria-labelledby="heading-@prefabEntry.Key" data-bs-parent="#accordionExample">
+                    <div id="collapse-@prefabEntry.Key" class="accordion-collapse collapse" aria-labelledby="heading-@prefabEntry.Key" data-bs-parent="#accordion-@prefabEntry.Key">
                         <div class="accordion-body">
                             @foreach (var variation in prefabEntry.Value)
                             {
@@ -36,6 +38,54 @@
             </div>
         </div>
     }
+
+    <!--                         <select @bind="_selectedPrefabKey" class="form-select">
+                            <option value="" disabled selected>Select prefab to add</option>
+                            @foreach (var prefabKey in VanillaPack.Entries.Keys)
+                            {
+                                if (!Pack.Entries.ContainsKey(prefabKey))
+                                {
+                                    <option value="@prefabKey">@prefabKey</option>
+                                }
+                            }
+                        </select>
+                        <button class="btn btn-primary mt-2" @onclick="AddNewPrefab" disabled="@(string.IsNullOrEmpty(_selectedPrefabKey))">
+                            Add
+                        </button>  -->
+
+    <div class="col">
+        <div class="accordion" id="accordion-Add-Entry">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-Add-Entry">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-Add-Entry" aria-expanded="true" aria-controls="collapse-Add-Entry">
+                        <!-- Dynamisches Bild basierend auf Auswahl -->
+                        <div class="prefab-image-container">
+                            <img src="@GetSelectedPrefabImage()" alt="Add Entry" class="prefab-image-large" onerror="this.onerror=null;this.src='images/placeholder.jpg';" />
+                        </div>
+                        <!-- Kleiner Text oben -->
+                        <h5 class="prefab-text">Add Prefab</h5>
+                    </button>
+                </h2>
+                <div id="collapse-Add-Entry" class="accordion-collapse collapse" aria-labelledby="heading-Add-Entry" data-bs-parent="#accordion-Add-Entry">
+                    <div class="accordion-body">
+                        <select @bind="_selectedPrefabKey" class="form-select">
+                            <option value="" disabled selected>Select prefab to add</option>
+                            @foreach (var prefabKey in VanillaPack.Entries.Keys)
+                            {
+                                if (!Pack.Entries.ContainsKey(prefabKey))
+                                {
+                                    <option value="@prefabKey">@prefabKey</option>
+                                }
+                            }
+                        </select>
+                        <button class="btn btn-primary mt-2" @onclick="AddNewPrefab" disabled="@(string.IsNullOrEmpty(_selectedPrefabKey))">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -56,5 +106,34 @@
         {
             prefabVisibility[prefabKey] = true; // Wenn der Key noch nicht existiert, setze ihn auf "sichtbar"
         }
+    }
+
+    private void AddNewPrefab()
+    {
+        if (!string.IsNullOrEmpty(_selectedPrefabKey) && !Pack.Entries.ContainsKey(_selectedPrefabKey))
+        {
+            Pack.Entries[_selectedPrefabKey] = new List<Variation>();
+            foreach(Variation variation in VanillaPack.Entries[_selectedPrefabKey])
+            {
+                Pack.Entries[_selectedPrefabKey].Add(new Variation
+                {
+                    Color1 = variation.Color1,
+                    Color2 = variation.Color2,
+                    Color3 = variation.Color3,
+                    Probability = variation.Probability
+                });
+            }
+            _selectedPrefabKey = string.Empty; // Setzt das Dropdown zurück
+        }
+    }
+
+    private string GetSelectedPrefabImage()
+    {
+        if (string.IsNullOrEmpty(_selectedPrefabKey))
+        {
+            return "images/add.png";
+        }
+
+        return $"thumbnails/{_selectedPrefabKey}.png";
     }
 }
