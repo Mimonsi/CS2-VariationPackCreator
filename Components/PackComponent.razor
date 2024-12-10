@@ -8,11 +8,46 @@
     <input type="text" @bind="Pack.Name" />
 </h3>
 
-@foreach (var prefabEntry in Pack.Entries)
-{
-    <h4>@prefabEntry.Key</h4>
-    @foreach (var variation in prefabEntry.Value)
+<div class="accordion" id="accordionExample">
+    @foreach (var prefabEntry in Pack.Entries)
     {
-        <VariationComponent Variation="@variation" />
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-@prefabEntry.Key">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@prefabEntry.Key" aria-expanded="true" aria-controls="collapse-@prefabEntry.Key">
+                    <!-- Bild und Name -->
+                    <img src="your-image-url" alt="@prefabEntry.Key" class="prefab-image" />
+                    <h4>@prefabEntry.Key</h4>
+                </button>
+            </h2>
+            <div id="collapse-@prefabEntry.Key" class="accordion-collapse collapse" aria-labelledby="heading-@prefabEntry.Key" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    @foreach (var variation in prefabEntry.Value)
+                    {
+                        <VariationComponent Variation="@variation" />
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private Dictionary<string, bool> prefabVisibility = new Dictionary<string, bool>();
+
+    private bool IsPrefabVisible(string prefabKey)
+    {
+        return prefabVisibility.ContainsKey(prefabKey) && prefabVisibility[prefabKey];
+    }
+
+    private void TogglePrefabVisibility(string prefabKey)
+    {
+        if (prefabVisibility.ContainsKey(prefabKey))
+        {
+            prefabVisibility[prefabKey] = !prefabVisibility[prefabKey];
+        }
+        else
+        {
+            prefabVisibility[prefabKey] = true; // Wenn der Key noch nicht existiert, setze ihn auf "sichtbar"
+        }
     }
 }

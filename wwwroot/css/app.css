@@ -101,3 +101,42 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.prefab-container {
+    margin-bottom: 10px;
+}
+
+.prefab-header img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.prefab-header h4 {
+    margin-left: 10px;
+}
+
+.prefab-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.prefab-content {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #ccc;
+}
+
+.prefab-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.prefab-content[style*="display:block"] {
+    max-height: 1000px;
+}
