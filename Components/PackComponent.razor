@@ -2,8 +2,11 @@
 
 @code {
     [Parameter] public Pack Pack { get; set; }
-    private string _selectedPrefabKey = string.Empty; // Für das Dropdown
+    private string _selectedPrefabKey = string.Empty; // Dropdown value
     [Parameter] public Pack VanillaPack { get; set; }
+
+    private bool _useCustomPrefabName = false; // Zustand der Checkbox
+    private string _customPrefabName = string.Empty; // Benutzerdefinierter Name
 }
 
 <h3>
@@ -38,12 +41,13 @@
             </div>
         </div>
     }
+
     <div class="col">
         <div class="accordion" id="accordion-Add-Entry">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-Add-Entry">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-Add-Entry" aria-expanded="true" aria-controls="collapse-Add-Entry">
-                        <!-- Dynamisches Bild basierend auf Auswahl -->
+                        <!-- Dynamic image, based on selection -->
                         <div class="prefab-image-container">
                             <img src="@GetSelectedPrefabImage()" alt="Add Entry" class="prefab-image-large" onerror="this.onerror=null;this.src='images/placeholder.jpg';"/>
                         </div>
@@ -52,17 +56,34 @@
                 </h2>
                 <div id="collapse-Add-Entry" class="accordion-collapse collapse" aria-labelledby="heading-Add-Entry" data-bs-parent="#accordion-Add-Entry">
                     <div class="accordion-body">
-                        <select @bind="_selectedPrefabKey" class="form-select">
-                            <option value="" disabled selected>Select prefab to add</option>
-                            @foreach (var prefabKey in VanillaPack.Entries.Keys)
-                            {
-                                if (!Pack.Entries.ContainsKey(prefabKey))
+                        <!-- Checkbox für benutzerdefinierten Namen -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="useCustomPrefabName" @bind="_useCustomPrefabName" />
+                            <label class="form-check-label" for="useCustomPrefabName">
+                                Use Custom Prefab Name
+                            </label>
+                        </div>
+
+                        <!-- Entweder Dropdown oder Textfeld basierend auf Checkbox -->
+                        @if (_useCustomPrefabName)
+                        {
+                            <input type="text" class="form-control mt-2" @bind="_customPrefabName" placeholder="Enter custom prefab name" />
+                        }
+                        else
+                        {
+                            <select @bind="_selectedPrefabKey" class="form-select mt-2">
+                                <option value="" disabled selected>Select prefab to add</option>
+                                @foreach (var prefabKey in VanillaPack.Entries.Keys)
                                 {
-                                    <option value="@prefabKey">@prefabKey</option>
+                                    if (!Pack.Entries.ContainsKey(prefabKey))
+                                    {
+                                        <option value="@prefabKey">@prefabKey</option>
+                                    }
                                 }
-                            }
-                        </select>
-                        <button class="btn btn-primary mt-2" @onclick="AddNewPrefab" disabled="@(string.IsNullOrEmpty(_selectedPrefabKey))">
+                            </select>
+                        }
+
+                        <button class="btn btn-primary mt-2" @onclick="AddNewPrefab" disabled="@(string.IsNullOrEmpty(_selectedPrefabKey) && string.IsNullOrEmpty(_customPrefabName))">
                             Add
                         </button>
                     </div>
@@ -94,30 +115,39 @@
 
     private void AddNewPrefab()
     {
-        if (!string.IsNullOrEmpty(_selectedPrefabKey) && !Pack.Entries.ContainsKey(_selectedPrefabKey))
+        string prefabKeyToAdd = _useCustomPrefabName ? _customPrefabName : _selectedPrefabKey;
+
+        if (!string.IsNullOrEmpty(prefabKeyToAdd) && !Pack.Entries.ContainsKey(prefabKeyToAdd))
         {
-            Pack.Entries[_selectedPrefabKey] = new List<Variation>();
-            foreach(Variation variation in VanillaPack.Entries[_selectedPrefabKey])
+            Pack.Entries[prefabKeyToAdd] = new List<Variation>();
+            if (!_useCustomPrefabName)
             {
-                Pack.Entries[_selectedPrefabKey].Add(new Variation
+                foreach (Variation variation in VanillaPack.Entries[_selectedPrefabKey])
                 {
-                    Color1 = variation.Color1,
-                    Color2 = variation.Color2,
-                    Color3 = variation.Color3,
-                    Probability = variation.Probability
-                });
+                    Pack.Entries[prefabKeyToAdd].Add(new Variation
+                    {
+                        Color1 = variation.Color1,
+                        Color2 = variation.Color2,
+                        Color3 = variation.Color3,
+                        Probability = variation.Probability
+                    });
+                }
             }
             _selectedPrefabKey = string.Empty; // Setzt das Dropdown zurück
+            _customPrefabName = string.Empty; // Setzt den benutzerdefinierten Namen zurück
         }
     }
 
     private string GetSelectedPrefabImage()
     {
+        if (_useCustomPrefabName && string.IsNullOrEmpty(_customPrefabName))
+        {
+            return "images/custom.png";
+        }
         if (string.IsNullOrEmpty(_selectedPrefabKey))
         {
             return "images/add.png";
         }
-
         return $"thumbnails/{_selectedPrefabKey}.png";
     }
 }
