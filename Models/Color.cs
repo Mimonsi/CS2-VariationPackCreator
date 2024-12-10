@@ -26,26 +26,36 @@ namespace VariationPackCreator.Models
     }
 
 
-    // Der ColorConverter sollte in diesem Namensraum sein
     public class ColorConverter : JsonConverter<Color>
     {
         public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var colorString = reader.GetString();
 
-            if (string.IsNullOrEmpty(colorString) || colorString.Length != 7 || colorString[0] != '#')
+            // Prüfen, ob der String eine gültige Länge hat (6 Zeichen für RGB-Hex-Werte)
+            if (string.IsNullOrEmpty(colorString) || colorString.Length != 6)
             {
-                throw new JsonException("Invalid color string format");
+                Console.WriteLine($"Ungültiger Farbwert: {colorString}");
+                return new Color(); // Rückgabe eines leeren Farbobjekts bei ungültigem Wert
             }
 
-            var colorParts = new[]
+            try
             {
-                Convert.ToInt32(colorString.Substring(1, 2), 16),
-                Convert.ToInt32(colorString.Substring(3, 2), 16),
-                Convert.ToInt32(colorString.Substring(5, 2), 16)
-            };
+                // Umwandlung der Hex-Werte in RGB
+                var colorParts = new[]
+                {
+                    Convert.ToInt32(colorString.Substring(0, 2), 16),
+                    Convert.ToInt32(colorString.Substring(2, 2), 16),
+                    Convert.ToInt32(colorString.Substring(4, 2), 16)
+                };
 
-            return new Color { R = colorParts[0], G = colorParts[1], B = colorParts[2] };
+                return new Color { R = colorParts[0], G = colorParts[1], B = colorParts[2] };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Parsen der Farbe {colorString}: {ex.Message}");
+                return new Color(); // Rückgabe eines Default-Werts im Fehlerfall
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
@@ -53,4 +63,5 @@ namespace VariationPackCreator.Models
             writer.WriteStringValue(value.Hex);
         }
     }
+
 }

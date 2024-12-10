@@ -29,7 +29,8 @@ else
     {
         var options = new JsonSerializerOptions
         {
-            Converters = { new ColorConverter() }
+            Converters = { new ColorConverter() },
+            PropertyNameCaseInsensitive = true
         };
 
         try
