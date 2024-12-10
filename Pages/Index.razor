@@ -1,0 +1,62 @@
+﻿@page "/"
+@inject HttpClient Http
+
+<h3>Vehicle Variation Pack Creator</h3>
+
+<div>
+    <h4>Select a preset:</h4>
+    <select @onchange="LoadPreset">
+        <option value="">-- Select a preset --</option>
+        @foreach (var preset in PresetFiles)
+        {
+            <option value="@preset">@preset</option>
+        }
+    </select>
+</div>
+
+<div style="margin-top: 20px;">
+    <h4>Or upload your own JSON file:</h4>
+    <InputFile OnChange="UploadJsonFile" accept=".json" />
+</div>
+
+<div style="margin-top: 20px;">
+    <h4>Loaded JSON data:</h4>
+    <pre>@LoadedJson</pre>
+</div>
+
+@code {
+    private List<string> PresetFiles = new()
+    {
+        "presets/Vanilla.json",
+        "presets/German Vehicle Pack.json"
+    };
+
+    private string LoadedJson = "";
+
+    private async Task LoadPreset(ChangeEventArgs e)
+    {
+        var selectedPreset = e.Value?.ToString();
+        if (!string.IsNullOrEmpty(selectedPreset))
+        {
+            try
+            {
+                LoadedJson = await Http.GetStringAsync(selectedPreset);
+            }
+            catch (Exception ex)
+            {
+                LoadedJson = $"Error loading preset: {ex.Message}";
+            }
+        }
+    }
+
+    private async Task UploadJsonFile(InputFileChangeEventArgs e)
+    {
+        var uploadedFile = e.File;
+        if (uploadedFile != null)
+        {
+            using var stream = uploadedFile.OpenReadStream(10 * 1024 * 1024); // 10MB limit
+            using var reader = new StreamReader(stream);
+            LoadedJson = await reader.ReadToEndAsync();
+        }
+    }
+}
