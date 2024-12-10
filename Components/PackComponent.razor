@@ -9,13 +9,12 @@
         <PrefabEntry Name="@prefabEntry.Key" Variations="@prefabEntry.Value"/>
     }
 
-    <AddPrefabEntryComponent VanillaPack="@VanillaPack" Pack="@Pack"/>
+    <AddPrefabEntryComponent VanillaPack="@VanillaPack" Pack="@Pack" OnAddPrefabEntryClick="AddNewPrefab"/>
 </div>
 
 @code {
     [Parameter] public required Pack Pack { get; set; }
     [Parameter] public required Pack VanillaPack { get; set; }
-
 
     // Methode zum Hinzufügen eines neuen Prefabs
     private void AddNewPrefab(string name)
