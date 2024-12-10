@@ -24,6 +24,6 @@
             set => _color3 = value;
         }
 
-        public int Probability { get; set; }
+        public int Probability { get; set; } = 100;
     }
 }

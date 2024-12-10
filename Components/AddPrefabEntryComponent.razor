@@ -1,0 +1,126 @@
+﻿@using VariationPackCreator.Models
+<div class="col">
+    <div class="accordion" id="accordion-Add-Entry">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-Add-Entry">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-Add-Entry" aria-expanded="true" aria-controls="collapse-Add-Entry">
+                    <div class="prefab-image-container">
+                        <img src="@GetSelectedPrefabImage()" alt="Add Entry" class="prefab-image-large" onerror="this.onerror=null;this.src='images/placeholder.jpg';"/>
+                    </div>
+                    <h5 class="prefab-text">Add Prefab</h5>
+                </button>
+            </h2>
+            <div id="collapse-Add-Entry" class="accordion-collapse collapse" aria-labelledby="heading-Add-Entry" data-bs-parent="#accordion-Add-Entry">
+                <div class="accordion-body">
+                    <!-- Checkbox für benutzerdefinierten Namen -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="useCustomPrefabName" @onchange="OnCustomPrefabNameChange"/>
+                        <label class="form-check-label" for="useCustomPrefabName">
+                            Use Custom Prefab Name
+                        </label>
+                    </div>
+
+                    <!-- Entweder Dropdown oder Textfeld basierend auf Checkbox -->
+                    @if (_useCustomPrefabName)
+                    {
+                        <input type="text" class="form-control mt-2" @bind="_customPrefabName" placeholder="Enter custom prefab name" />
+                    }
+                    else
+                    {
+                        <select @bind="_selectedPrefabKey" class="form-select mt-2">
+                            <option value="" disabled selected>Select prefab to add</option>
+                            @foreach (var prefabKey in VanillaPack.Entries.Keys)
+                            {
+                                if (!Pack.Entries.ContainsKey(prefabKey))
+                                {
+                                    <option value="@prefabKey">@prefabKey</option>
+                                }
+                            }
+                        </select>
+                    }
+
+                    <button class="btn btn-primary mt-2" @onclick="OnAddPrefabEntry" disabled="@(!IsAddButtonEnabled())">
+                        Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private string _selectedPrefabKey = string.Empty; // Dropdown value
+    [Parameter] public EventCallback OnAddPrefabEntryClick { get; set; }
+    [Parameter] public required Pack VanillaPack { get; set; }
+    [Parameter] public required Pack Pack { get; set; }
+
+    private bool _useCustomPrefabName = false;
+    private string _customPrefabName = string.Empty;
+
+    private Dictionary<string, bool> prefabVisibility = new();
+
+    private bool IsCustomPrefabNameValid()
+    {
+        return !string.IsNullOrEmpty(_customPrefabName) && !Pack.Entries.ContainsKey(_customPrefabName);
+    }
+
+    // Methode zum Umschalten der Sichtbarkeit eines Prefabs
+    private bool IsPrefabVisible(string prefabKey)
+    {
+        return prefabVisibility.ContainsKey(prefabKey) && prefabVisibility[prefabKey];
+    }
+
+    private void TogglePrefabVisibility(string prefabKey)
+    {
+        if (prefabVisibility.ContainsKey(prefabKey))
+        {
+            prefabVisibility[prefabKey] = !prefabVisibility[prefabKey];
+        }
+        else
+        {
+            prefabVisibility[prefabKey] = true; // Wenn der Key noch nicht existiert, setze ihn auf "sichtbar"
+        }
+    }
+
+    // Methode zum Hinzufügen eines neuen Prefabs
+    private void OnAddPrefabEntry()
+    {
+        OnAddPrefabEntryClick.InvokeAsync();
+        _selectedPrefabKey = string.Empty; // Setzt das Dropdown zurück
+        _customPrefabName = string.Empty; // Setzt den benutzerdefinierten Namen zurück
+    }
+
+    private string GetSelectedPrefabImage()
+    {
+        if (_useCustomPrefabName)
+        {
+            return "images/custom.png";
+        }
+        if (string.IsNullOrEmpty(_selectedPrefabKey))
+        {
+            return "images/add.png";
+        }
+        return $"thumbnails/{_selectedPrefabKey}.png";
+    }
+
+    private void OnCustomPrefabNameChange(ChangeEventArgs e)
+    {
+        _useCustomPrefabName = (bool)e.Value;
+        if (_useCustomPrefabName)
+        {
+            _selectedPrefabKey = string.Empty;
+        }
+    }
+
+    private bool IsAddButtonEnabled()
+    {
+        // Der Button ist nur aktiviert, wenn entweder ein benutzerdefinierter Name gesetzt ist und gültig
+        // oder ein Prefab aus der Liste ausgewählt wurde und nicht bereits existiert
+        if (_useCustomPrefabName && IsCustomPrefabNameValid())
+            return true;
+        if (!_useCustomPrefabName && !string.IsNullOrEmpty(_selectedPrefabKey))
+            return true;
+        return false;
+    }
+}
