@@ -5,18 +5,15 @@
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
-<h3>Vehicle Variation Pack Creator</h3>
-
 @if (ShowSetup)
 {
     <SetupPanel OnPresetLoaded="LoadJson" OnFileUploaded="LoadJson" OnClose="() => ShowSetup = false" />
 }
 else
 {
-    <button @onclick="ConfirmStartFromScratch" style="margin-top: 20px;">Start from Scratch</button>
-    <button @onclick="DownloadPack" style="margin-top: 20px;">Download my Pack</button>
+    <button class="btn btn-danger" @onclick="ConfirmStartFromScratch" style="margin-top: 20px;">Start from Scratch</button>
+    <button class="btn btn-primary" @onclick="DownloadPack" style="margin-top: 20px;">Download my Pack</button>
     <div style="margin-top: 20px;" class="loaded-section">
-        <h4>Loaded JSON data:</h4>
         <PackComponent Pack="@CurrentPack" />
     </div>
 

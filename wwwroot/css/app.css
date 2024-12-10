@@ -140,3 +140,25 @@ code {
 .prefab-content[style*="display:block"] {
     max-height: 1000px;
 }
+
+.prefab-image-container {
+    width: 100%;  /* Damit das Bild den gesamten verfügbaren Platz ausfüllt */
+    max-height: 200px;  /* Maximale Höhe des Bildes */
+    overflow: hidden;  /* Überschüssige Teile des Bildes verstecken */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.prefab-image-large {
+    width: auto;
+    height: 100%;  /* Das Bild füllt die Höhe des Containers */
+}
+
+.prefab-text {
+    font-size: 0.9rem;  /* Kleinere Schriftgröße für den Text */
+    text-align: center;
+    margin-top: 10px;  /* Etwas Abstand zum Bild */
+    width: 100%;
+}
+
