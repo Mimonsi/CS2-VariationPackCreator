@@ -14,6 +14,7 @@
 else
 {
     <button @onclick="ConfirmStartFromScratch" style="margin-top: 20px;">Start from Scratch</button>
+    <button @onclick="DownloadPack" style="margin-top: 20px;">Download my Pack</button>
     <div style="margin-top: 20px;" class="loaded-section">
         <h4>Loaded JSON data:</h4>
         <PackComponent Pack="@CurrentPack" />
@@ -53,5 +54,11 @@ else
             ShowSetup = true;
             LoadedJson = "";
         }
+    }
+
+    private async Task DownloadPack()
+    {
+        string json = JsonSerializer.Serialize(CurrentPack);
+        await JSRuntime.InvokeVoidAsync("downloadJson", json, CurrentPack.Name + ".json");
     }
 }

@@ -1,9 +1,12 @@
 ﻿@using VariationPackCreator.Models
+
 @code {
     [Parameter] public Pack Pack { get; set; }
 }
 
-<h3>@Pack.Name</h3>
+<h3>
+    <input type="text" @bind="Pack.Name" />
+</h3>
 
 @foreach (var prefabEntry in Pack.Entries)
 {
