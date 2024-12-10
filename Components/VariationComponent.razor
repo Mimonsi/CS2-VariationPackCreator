@@ -1,11 +1,17 @@
 ﻿@using VariationPackCreator.Models
 
-<div class="col">
-    <div class="border">
-        <button @onclick="OnRemoveVariationClick" class="btn btn-danger">X</button>
+<div class="col position-relative p-3 border rounded">
+    <!-- X Button oben rechts -->
+    <button @onclick="OnRemoveVariationClick" class="btn btn-danger position-absolute top-0 end-0">
+        X
+    </button>
+
+    <!-- Color Inputs und Probability Input mit Abstand -->
+    <div class="d-flex flex-column align-items-center gap-3">
         <ColorInputComponent Color="@Variation.Color1"/>
         <ColorInputComponent Color="@Variation.Color2"/>
         <ColorInputComponent Color="@Variation.Color3"/>
+
         <div>
             <label for="probability">Probability</label>
             <input type="number" id="probability" @bind="Variation.Probability" min="0" max="255" step="1"/>
