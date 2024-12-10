@@ -95,7 +95,12 @@ else
 
     private async Task DownloadPack()
     {
-        string json = JsonSerializer.Serialize(CurrentPack);
+        var options = new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            Converters = { new ColorConverter() }
+        };
+        string json = JsonSerializer.Serialize(CurrentPack, options);
         await JSRuntime.InvokeVoidAsync("downloadJson", json, CurrentPack.Name + ".json");
     }
 }

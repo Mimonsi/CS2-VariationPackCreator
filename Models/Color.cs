@@ -60,7 +60,8 @@ namespace VariationPackCreator.Models
 
         public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value.Hex);
+            // Write hex without #
+            writer.WriteStringValue(value.Hex.Replace("#", ""));
         }
     }
 
