@@ -1,0 +1,58 @@
+﻿@inject HttpClient Http
+
+<div>
+    <h4>Select a preset:</h4>
+    <select @onchange="LoadPreset">
+        <option value="">-- Select a preset --</option>
+        @foreach (var preset in PresetFiles)
+        {
+            <option value="@preset">@preset</option>
+        }
+    </select>
+
+    <div style="margin-top: 20px;">
+        <h4>Or upload your own JSON file:</h4>
+        <InputFile OnChange="UploadJsonFile" accept=".json" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<string> OnPresetLoaded { get; set; }
+    [Parameter] public EventCallback<string> OnFileUploaded { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private List<string> PresetFiles = new()
+    {
+        "presets/Vanilla.json",
+        "presets/German Vehicle Pack.json"
+    };
+
+    private async Task LoadPreset(ChangeEventArgs e)
+    {
+        var selectedPreset = e.Value?.ToString();
+        if (!string.IsNullOrEmpty(selectedPreset))
+        {
+            try
+            {
+                var presetJson = await Http.GetStringAsync(selectedPreset); // HttpClient wird jetzt korrekt genutzt
+                await OnPresetLoaded.InvokeAsync(presetJson);
+            }
+            catch (Exception ex)
+            {
+                // Optional: Fehlerbehandlung
+            }
+        }
+    }
+
+    private async Task UploadJsonFile(InputFileChangeEventArgs e)
+    {
+        var uploadedFile = e.File;
+        if (uploadedFile != null)
+        {
+            using var stream = uploadedFile.OpenReadStream(10 * 1024 * 1024); // 10MB limit
+            using var reader = new StreamReader(stream);
+            var json = await reader.ReadToEndAsync();
+            await OnFileUploaded.InvokeAsync(json);
+        }
+    }
+}
