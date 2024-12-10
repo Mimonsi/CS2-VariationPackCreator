@@ -8,7 +8,7 @@
     <ColorInputComponent Color="@Variation.Color2" />
     <ColorInputComponent Color="@Variation.Color3" />
     <div>
-        <label>Probability</label>
-        <input type="number" value="@Variation.Probability" />
+        <label for="probability">Probability</label>
+        <input type="number" id="probability" @bind="Variation.Probability" min="0" max="255" step="1" />
     </div>
 </div>
