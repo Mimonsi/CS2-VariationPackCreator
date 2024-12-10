@@ -51,7 +51,7 @@
 @code {
 
     private string _selectedPrefabKey = string.Empty; // Dropdown value
-    [Parameter] public EventCallback OnAddPrefabEntryClick { get; set; }
+    [Parameter] public EventCallback<string> OnAddPrefabEntryClick { get; set; }
     [Parameter] public required Pack VanillaPack { get; set; }
     [Parameter] public required Pack Pack { get; set; }
 
@@ -86,7 +86,8 @@
     // Methode zum Hinzufügen eines neuen Prefabs
     private void OnAddPrefabEntry()
     {
-        OnAddPrefabEntryClick.InvokeAsync();
+        string prefabName = _useCustomPrefabName ? _customPrefabName : _selectedPrefabKey;
+        OnAddPrefabEntryClick.InvokeAsync(prefabName);
         _selectedPrefabKey = string.Empty; // Setzt das Dropdown zurück
         _customPrefabName = string.Empty; // Setzt den benutzerdefinierten Namen zurück
     }
