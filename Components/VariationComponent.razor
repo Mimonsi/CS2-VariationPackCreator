@@ -1,14 +1,19 @@
 ﻿@using VariationPackCreator.Models
-@code {
-    [Parameter] public Variation Variation { get; set; }
-}
 
 <div class="col">
-    <ColorInputComponent Color="@Variation.Color1" />
-    <ColorInputComponent Color="@Variation.Color2" />
-    <ColorInputComponent Color="@Variation.Color3" />
-    <div>
-        <label for="probability">Probability</label>
-        <input type="number" id="probability" @bind="Variation.Probability" min="0" max="255" step="1" />
+    <div class="border">
+        <button @onclick="OnRemoveVariationClick" class="btn btn-danger">X</button>
+        <ColorInputComponent Color="@Variation.Color1"/>
+        <ColorInputComponent Color="@Variation.Color2"/>
+        <ColorInputComponent Color="@Variation.Color3"/>
+        <div>
+            <label for="probability">Probability</label>
+            <input type="number" id="probability" @bind="Variation.Probability" min="0" max="255" step="1"/>
+        </div>
     </div>
 </div>
+
+@code {
+    [Parameter] public required Variation Variation { get; set; }
+    [Parameter] public required EventCallback OnRemoveVariationClick { get; set; }
+}

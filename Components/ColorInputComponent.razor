@@ -1,9 +1,12 @@
 ﻿@using VariationPackCreator.Models
 @code {
-    [Parameter] public Color Color { get; set; }  // Mit [Parameter] markieren
+    [Parameter] public Color Color { get; set; }  // With [Parameter] to bind the value
 }
 
-<div>
-    <label>@Color.Hex</label>
-    <input type="color" @bind="Color.Hex" />
+<div class="d-flex align-items-center">
+    <!-- Color Picker -->
+    <input type="color" @bind="Color.Hex" class="me-2" />
+
+    <!-- Hex Text Box -->
+    <input type="text" @bind="Color.Hex" class="form-control" style="max-width: 120px;" />
 </div>

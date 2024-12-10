@@ -15,8 +15,9 @@
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                         @foreach (var variation in Variations)
                         {
-                            <VariationComponent Variation="@variation"/>
+                            <VariationComponent OnRemoveVariationClick="@(() => RemoveVariation(variation))" Variation="@variation"/>
                         }
+                        <AddVariationComponent OnAddVariationClick="@AddVariation"/>
                     </div>
                 </div>
             </div>
@@ -28,5 +29,13 @@
     [Parameter] public required string Name { get; set; }
     [Parameter] public required List<Variation> Variations { get; set; }
 
+    private void RemoveVariation(Variation variation)
+    {
+        Variations.Remove(variation);
+    }
 
+    private void AddVariation()
+    {
+        Variations.Add(new Variation());
+    }
 }

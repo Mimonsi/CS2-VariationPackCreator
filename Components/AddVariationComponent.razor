@@ -1,0 +1,11 @@
+﻿@using VariationPackCreator.Models
+
+<div class="col">
+    <div class="border">
+        <button class="btn btn-primary " @onclick="OnAddVariationClick">+</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnAddVariationClick { get; set; }
+}
