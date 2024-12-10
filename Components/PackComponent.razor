@@ -81,9 +81,9 @@
 </div>
 
 @code {
-    [Parameter] public Pack Pack { get; set; }
+    [Parameter] public required Pack Pack { get; set; }
     private string _selectedPrefabKey = string.Empty; // Dropdown value
-    [Parameter] public Pack VanillaPack { get; set; }
+    [Parameter] public required Pack VanillaPack { get; set; }
 
     private bool _useCustomPrefabName = false; // Zustand der Checkbox
     private string _customPrefabName = string.Empty; // Benutzerdefinierter Name
