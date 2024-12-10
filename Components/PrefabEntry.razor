@@ -12,10 +12,12 @@
             </h2>
             <div id="collapse-@Name" class="accordion-collapse collapse" aria-labelledby="heading-@Name" data-bs-parent="#accordion-@Name">
                 <div class="accordion-body">
-                    @foreach (var variation in Variations)
-                    {
-                        <VariationComponent Variation="@variation" />
-                    }
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        @foreach (var variation in Variations)
+                        {
+                            <VariationComponent Variation="@variation"/>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
