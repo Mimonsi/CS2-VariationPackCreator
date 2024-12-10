@@ -1,0 +1,30 @@
+﻿@using VariationPackCreator.Models
+<div class="col">
+    <div class="accordion" id="accordion-@Name">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-@Name">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@Name" aria-expanded="true" aria-controls="collapse-@Name">
+                    <div class="prefab-image-container">
+                        <img src="thumbnails/@(Name).png" alt="@Name" class="prefab-image-large" onerror="this.onerror=null;this.src='images/custom.png';" />
+                    </div>
+                    <h5 class="prefab-text">@Name</h5>
+                </button>
+            </h2>
+            <div id="collapse-@Name" class="accordion-collapse collapse" aria-labelledby="heading-@Name" data-bs-parent="#accordion-@Name">
+                <div class="accordion-body">
+                    @foreach (var variation in Variations)
+                    {
+                        <VariationComponent Variation="@variation" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public required string Name { get; set; }
+    [Parameter] public required List<Variation> Variations { get; set; }
+
+
+}

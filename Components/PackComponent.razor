@@ -6,28 +6,7 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @foreach (var prefabEntry in Pack.Entries)
     {
-        <div class="col">
-            <div class="accordion" id="accordion-@prefabEntry.Key">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading-@prefabEntry.Key">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@prefabEntry.Key" aria-expanded="true" aria-controls="collapse-@prefabEntry.Key">
-                            <div class="prefab-image-container">
-                                <img src="@GetThumbnail(prefabEntry.Key)" alt="@prefabEntry.Key" class="prefab-image-large" onerror="this.onerror=null;this.src='images/placeholder.jpg';" />
-                            </div>
-                            <h5 class="prefab-text">@prefabEntry.Key</h5>
-                        </button>
-                    </h2>
-                    <div id="collapse-@prefabEntry.Key" class="accordion-collapse collapse" aria-labelledby="heading-@prefabEntry.Key" data-bs-parent="#accordion-@prefabEntry.Key">
-                        <div class="accordion-body">
-                            @foreach (var variation in prefabEntry.Value)
-                            {
-                                <VariationComponent Variation="@variation" />
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <PrefabEntry Name="@prefabEntry.Key" Variations="@prefabEntry.Value"/>
     }
 
     <div class="col">
@@ -88,7 +67,7 @@
     private bool _useCustomPrefabName = false; // Zustand der Checkbox
     private string _customPrefabName = string.Empty; // Benutzerdefinierter Name
 
-    private Dictionary<string, bool> prefabVisibility = new Dictionary<string, bool>();
+    private Dictionary<string, bool> prefabVisibility = new();
 
     // Methode zur Überprüfung, ob der benutzerdefinierte Name bereits existiert
     private bool IsCustomPrefabNameValid()
@@ -143,16 +122,6 @@
             _selectedPrefabKey = string.Empty; // Setzt das Dropdown zurück
             _customPrefabName = string.Empty; // Setzt den benutzerdefinierten Namen zurück
         }
-    }
-
-    // Rückgabemethoden für die Bild-URLs
-    private string GetThumbnail(string key)
-    {
-        if (!VanillaPack.Entries.ContainsKey(key))
-        {
-            return "images/custom.png";
-        }
-        return $"thumbnails/{key}.png";
     }
 
     private string GetSelectedPrefabImage()
