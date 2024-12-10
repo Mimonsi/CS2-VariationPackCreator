@@ -28,7 +28,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
           source: ./release/*
-          target: /opt/carVariationpackCreator/  # Zielverzeichnis auf dem Server
+          target: /opt/variationPackCreator/  # Zielverzeichnis auf dem Server
 
       - name: Reload Nginx
         uses: appleboy/ssh-action@v0.1.7
