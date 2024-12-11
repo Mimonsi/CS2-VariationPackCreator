@@ -29,8 +29,8 @@
         "presets/German Vehicle Pack.json",
         "presets/Realistic Global.json",
         "presets/Vancouver, Canada.json",
-        "presets/Vanilla Rebalance.json"
-
+        "presets/Vanilla Rebalance.json",
+        "presets/Japan.json"
     };
 
     private async Task LoadPreset(ChangeEventArgs e)
@@ -40,12 +40,12 @@
         {
             try
             {
-                var presetJson = await Http.GetStringAsync(selectedPreset); // HttpClient wird jetzt korrekt genutzt
+                var presetJson = await Http.GetStringAsync(selectedPreset);
                 await OnPresetLoaded.InvokeAsync(presetJson);
             }
             catch (Exception ex)
             {
-                // Optional: Fehlerbehandlung
+
             }
         }
     }
