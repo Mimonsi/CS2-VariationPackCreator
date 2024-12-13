@@ -118,6 +118,7 @@ code {
     margin-left: 10px;
 }
 
+
 .prefab-image {
     width: 50px;
     height: 50px;
@@ -141,24 +142,30 @@ code {
     max-height: 1000px;
 }
 
+.prefab-button {
+    height: 200px;
+    display: flex;
+}
+
 .prefab-image-container {
-    width: 100%;  /* Damit das Bild den gesamten verfügbaren Platz ausfüllt */
-    max-height: 200px;  /* Maximale Höhe des Bildes */
-    overflow: hidden;  /* Überschüssige Teile des Bildes verstecken */
+    width: 100%;  /* Breite des Containers */
+    height: 100%; /* Höhe des Containers */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Bild zentrieren */
+    overflow: hidden;    /* Verhindert Überlappung */
 }
 
 .prefab-image-large {
-    width: auto;
-    height: 100%;  /* Das Bild füllt die Höhe des Containers */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Bild skaliert proportional */
+    display: block;      /* Entfernt eventuelle Inline-Eigenschaften */
 }
 
 .prefab-text {
     font-size: 0.9rem;  /* Kleinere Schriftgröße für den Text */
     text-align: center;
     margin-top: 10px;  /* Etwas Abstand zum Bild */
-    width: 100%;
 }
 
