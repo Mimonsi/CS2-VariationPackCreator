@@ -2,12 +2,19 @@
 
 <div class="col position-relative p-3 border rounded">
     <!-- X Button oben rechts -->
-    <button @onclick="OnRemoveVariationClick" class="btn btn-danger position-absolute top-0 end-0">
+    <!--<button @onclick="OnRemoveVariationClick" class="btn btn-danger position-absolute top-0 end-0">
         X
-    </button>
+    </button>-->
 
     <!-- Color Inputs und Probability Input mit Abstand -->
     <div class="d-flex flex-column align-items-center gap-3">
+
+        <div class="d-flex align-items-center">
+            <button @onclick="OnRemoveVariationClick" class="btn btn-outline-danger position-absolute top-0 end-0">
+                Remove Variation
+            </button>
+            <p>Variation</p>
+        </div>
         <ColorInputComponent Component="Y" Color="@Variation.Color1"/>
         <ColorInputComponent Component="M" Color="@Variation.Color2"/>
         <ColorInputComponent Component="G" Color="@Variation.Color3"/>

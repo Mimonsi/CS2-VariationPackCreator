@@ -1,4 +1,5 @@
 ﻿@using VariationPackCreator.Models
+@inject IJSRuntime JsRuntime
 <h3>
     <input type="text" @bind="Pack.Name" />
 </h3>
@@ -6,7 +7,7 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @foreach (var prefabEntry in Pack.Entries)
     {
-        <PrefabEntry Name="@prefabEntry.Key" Variations="@prefabEntry.Value"/>
+        <PrefabEntry Name="@prefabEntry.Key" Variations="@prefabEntry.Value" OnRemovePrefabClick="RemovePrefab"/>
     }
 
     <AddPrefabEntryComponent VanillaPack="@VanillaPack" Pack="@Pack" OnAddPrefabEntryClick="AddNewPrefab"/>
@@ -36,5 +37,15 @@
                 }
             }
         }
+    }
+
+    private async Task RemovePrefab(string name)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure to remove this prefab?");
+        if (confirmed)
+        {
+            Pack.Entries.Remove(name);
+        }
+
     }
 }

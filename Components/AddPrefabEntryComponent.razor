@@ -3,7 +3,7 @@
     <div class="accordion" id="accordion-Add-Entry">
         <div class="accordion-item">
             <h2 class="accordion-header" id="heading-Add-Entry">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-Add-Entry" aria-expanded="true" aria-controls="collapse-Add-Entry">
+                <button class="accordion-button prefab-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-Add-Entry" aria-expanded="true" aria-controls="collapse-Add-Entry">
                     <div class="prefab-image-container">
                         <img src="@GetSelectedPrefabImage()" alt="Add Entry" class="prefab-image-large" onerror="this.onerror=null;this.src='images/placeholder.jpg';"/>
                     </div>
@@ -23,18 +23,15 @@
                     <!-- Entweder Dropdown oder Textfeld basierend auf Checkbox -->
                     @if (_useCustomPrefabName)
                     {
-                        <input type="text" class="form-control mt-2" @bind="_customPrefabName" placeholder="Enter custom prefab name" />
+                        <input type="text" class="form-control mt-2" @bind="_customPrefabName" placeholder="Enter custom prefab name"/>
                     }
                     else
                     {
                         <select @bind="_selectedPrefabKey" class="form-select mt-2">
                             <option value="" disabled selected>Select prefab to add</option>
-                            @foreach (var prefabKey in VanillaPack.Entries.Keys)
+                            @foreach (var prefabKey in GetAddablePrefabs())
                             {
-                                if (!Pack.Entries.ContainsKey(prefabKey))
-                                {
-                                    <option value="@prefabKey">@prefabKey</option>
-                                }
+                                <option value="@prefabKey">@prefabKey</option>
                             }
                         </select>
                     }
@@ -59,6 +56,19 @@
     private string _customPrefabName = string.Empty;
 
     private Dictionary<string, bool> prefabVisibility = new();
+
+    private List<string> GetAddablePrefabs()
+    {
+        List<string> addablePrefabs = new();
+        foreach (var prefabKey in VanillaPack.Entries.Keys)
+        {
+            if (!Pack.Entries.ContainsKey(prefabKey))
+            {
+                addablePrefabs.Add(prefabKey);
+            }
+        }
+        return addablePrefabs;
+    }
 
     private bool IsCustomPrefabNameValid()
     {

@@ -3,7 +3,7 @@
 @using VariationPackCreator.Models
 @using VariationPackCreator.Components
 @inject HttpClient Http
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
 @if (ShowSetup)
 {
@@ -85,7 +85,7 @@ else
 
     private async Task ConfirmStartFromScratch()
     {
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure? All data will be lost!");
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure? All data will be lost!");
         if (confirmed)
         {
             ShowSetup = true;
@@ -101,6 +101,6 @@ else
             Converters = { new ColorConverter() }
         };
         string json = JsonSerializer.Serialize(CurrentPack, options);
-        await JSRuntime.InvokeVoidAsync("downloadJson", json, CurrentPack.Name + ".json");
+        await JsRuntime.InvokeVoidAsync("downloadJson", json, CurrentPack.Name + ".json");
     }
 }
