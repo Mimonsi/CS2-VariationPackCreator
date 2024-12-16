@@ -1,10 +1,12 @@
 ﻿@using VariationPackCreator.Models
 @code {
     [Parameter] public Color Color { get; set; }  // With [Parameter] to bind the value
+    [Parameter] public String Component { get; set; }
 }
 
 <div class="d-flex align-items-center">
     <!-- Color Picker -->
+    <b>@(Component)⇒</b>
     <input type="color" @bind="Color.Hex" class="me-2" />
 
     <!-- Hex Text Box -->
