@@ -5,6 +5,10 @@ namespace VariationPackCreator.Models
 {
     public class Color
     {
+        public Color()
+        {
+        }
+
         public string Hex
         {
             get => $"#{R:X2}{G:X2}{B:X2}";
@@ -32,16 +36,14 @@ namespace VariationPackCreator.Models
         {
             var colorString = reader.GetString();
 
-            // Prüfen, ob der String eine gültige Länge hat (6 Zeichen für RGB-Hex-Werte)
             if (string.IsNullOrEmpty(colorString) || colorString.Length != 6)
             {
-                Console.WriteLine($"Ungültiger Farbwert: {colorString}");
-                return new Color(); // Rückgabe eines leeren Farbobjekts bei ungültigem Wert
+                Console.WriteLine($"Invalid color: {colorString}");
+                return new Color();
             }
 
             try
             {
-                // Umwandlung der Hex-Werte in RGB
                 var colorParts = new[]
                 {
                     Convert.ToInt32(colorString.Substring(0, 2), 16),
@@ -53,8 +55,8 @@ namespace VariationPackCreator.Models
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Parsen der Farbe {colorString}: {ex.Message}");
-                return new Color(); // Rückgabe eines Default-Werts im Fehlerfall
+                Console.WriteLine($"Error parsing color {colorString}: {ex.Message}");
+                return new Color();
             }
         }
 
