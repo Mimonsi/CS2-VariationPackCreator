@@ -1,6 +1,6 @@
 ﻿@using VariationPackCreator.Models
 
-<div class="col position-relative p-3 border rounded">
+<div class="col position-relative p-3 border rounded variation-container">
     <!-- X Button oben rechts -->
     <!--<button @onclick="OnRemoveVariationClick" class="btn btn-danger position-absolute top-0 end-0">
         X
@@ -10,9 +10,6 @@
     <div class="d-flex flex-column align-items-center gap-3">
 
         <div class="d-flex align-items-center">
-            <button @onclick="OnRemoveVariationClick" class="btn btn-danger position-absolute top-0 end-0">
-                X
-            </button>
             @if(!string.IsNullOrEmpty(VariationChance))
             {
                 <p>Chance: @VariationChance</p>
@@ -30,6 +27,9 @@
                    @bind-Value:after="OnVariationProbabilityChange.InvokeAsync"
                    min="0" max="255" step="1"/>
         </div>
+        <button @onclick="OnRemoveVariationClick" class="btn btn-danger">
+            Remove Variation
+        </button>
     </div>
 </div>
 
