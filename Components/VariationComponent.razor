@@ -1,31 +1,26 @@
 ﻿@using VariationPackCreator.Models
-
 <div class="position-relative p-3 border rounded variation-container">
-    <!-- X Button oben rechts -->
-    <!--<button @onclick="OnRemoveVariationClick" class="btn btn-danger position-absolute top-0 end-0">
-        X
-    </button>-->
-
-    <!-- Color Inputs und Probability Input mit Abstand -->
     <div class="d-flex flex-column align-items-center gap-3">
-
         <div class="d-flex align-items-center">
-            @if(!string.IsNullOrEmpty(VariationChance))
+            @if (!string.IsNullOrEmpty(VariationChance))
             {
                 <p>Chance: @VariationChance</p>
             }
         </div>
-        <ColorInputComponent Component="Y" Color="@Variation.Color1"/>
-        <ColorInputComponent Component="M" Color="@Variation.Color2"/>
-        <ColorInputComponent Component="G" Color="@Variation.Color3"/>
+        <ColorInputComponent Component="Y" Color="@Variation.Color1" />
+        <ColorInputComponent Component="M" Color="@Variation.Color2" />
+        <ColorInputComponent Component="G" Color="@Variation.Color3" />
 
         <div>
             <label for="probability">Probability</label>
             <input type="number" id="probability"
-                   @bind-Value="Variation.Probability"
-                   @bind-Value:event="oninput"
-                   @bind-Value:after="OnVariationProbabilityChange.InvokeAsync"
-                   min="0" max="255" step="1"/>
+                   @bind-value="ProbabilityInput"
+                   @bind-value:event="oninput"
+                   min="0" max="255" step="1" class="@ValidationClass" />
+            @if (!string.IsNullOrEmpty(ValidationMessage))
+            {
+                <p class="text-danger">@ValidationMessage</p>
+            }
         </div>
         <button @onclick="OnRemoveVariationClick" class="btn btn-danger">
             Remove Variation
@@ -38,4 +33,28 @@
     [Parameter] public required EventCallback OnRemoveVariationClick { get; set; }
     [Parameter] public required string VariationChance { get; set; }
     [Parameter] public required EventCallback OnVariationProbabilityChange { get; set; }
+
+    private string? ValidationMessage { get; set; }
+    private string ValidationClass { get; set; } = string.Empty;
+
+    private int ProbabilityInput
+    {
+        get => Variation.Probability;
+        set
+        {
+            if (value > 255)
+            {
+                ValidationMessage = "Probability cannot exceed 255. Create second variation instead for a combined value greater than 255.";
+                ValidationClass = "is-invalid";
+                Variation.Probability = 255;
+            }
+            else
+            {
+                ValidationMessage = null;
+                ValidationClass = string.Empty;
+                Variation.Probability = value;
+                OnVariationProbabilityChange.InvokeAsync();
+            }
+        }
+    }
 }
