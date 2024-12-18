@@ -181,8 +181,8 @@ code {
 }
 
 .variation-container {
-    min-width: 30%;
-    max-width: 31%;
+    flex: 0 1 calc(33.33% - 16px);
+    box-sizing: border-box;
     margin-bottom: 10px;
 }
 
