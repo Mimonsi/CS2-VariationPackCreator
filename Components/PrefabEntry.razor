@@ -16,7 +16,7 @@
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                         @foreach (var variation in Variations)
                         {
-                            <VariationComponent OnRemoveVariationClick="@(() => RemoveVariation(variation))" Variation="@variation"/>
+                            <VariationComponent OnRemoveVariationClick="@(() => RemoveVariation(variation))" Variation="@variation" VariationChance="@GetVariationChance(variation)" OnVariationProbabilityChange="@OnVariationProbabilityChange"/>
                         }
                         <AddVariationComponent OnAddVariationClick="@AddVariation"/>
                     </div>
@@ -30,6 +30,27 @@
     [Parameter] public required string Name { get; set; }
     [Parameter] public required List<Variation> Variations { get; set; }
     [Parameter] public EventCallback<string> OnRemovePrefabClick { get; set; }
+
+    public string GetVariationChance(Variation variation)
+    {
+        if (Variations.Count < 2)
+        {
+            return string.Empty;
+        }
+
+        int sum = 0;
+        for (int i = 0; i < Variations.Count; i++)
+        {
+            sum += Variations[i].Probability;
+        }
+        double chance = ((double) variation.Probability / (double) sum) * 100;
+        return $"{chance:0.##}%";
+    }
+
+    private void OnVariationProbabilityChange()
+    {
+        StateHasChanged();
+    }
 
     private void RemovePrefab()
     {
@@ -45,10 +66,12 @@
     private void RemoveVariation(Variation variation)
     {
         Variations.Remove(variation);
+        StateHasChanged();
     }
 
     private void AddVariation()
     {
         Variations.Add(new Variation());
+        StateHasChanged();
     }
 }

@@ -10,10 +10,13 @@
     <div class="d-flex flex-column align-items-center gap-3">
 
         <div class="d-flex align-items-center">
-            <button @onclick="OnRemoveVariationClick" class="btn btn-outline-danger position-absolute top-0 end-0">
-                Remove Variation
+            <button @onclick="OnRemoveVariationClick" class="btn btn-danger position-absolute top-0 end-0">
+                X
             </button>
-            <p>Variation</p>
+            @if(!string.IsNullOrEmpty(VariationChance))
+            {
+                <p>Chance: @VariationChance</p>
+            }
         </div>
         <ColorInputComponent Component="Y" Color="@Variation.Color1"/>
         <ColorInputComponent Component="M" Color="@Variation.Color2"/>
@@ -21,7 +24,11 @@
 
         <div>
             <label for="probability">Probability</label>
-            <input type="number" id="probability" @bind="Variation.Probability" min="0" max="255" step="1"/>
+            <input type="number" id="probability"
+                   @bind-Value="Variation.Probability"
+                   @bind-Value:event="oninput"
+                   @bind-Value:after="OnVariationProbabilityChange.InvokeAsync"
+                   min="0" max="255" step="1"/>
         </div>
     </div>
 </div>
@@ -29,4 +36,6 @@
 @code {
     [Parameter] public required Variation Variation { get; set; }
     [Parameter] public required EventCallback OnRemoveVariationClick { get; set; }
+    [Parameter] public required string VariationChance { get; set; }
+    [Parameter] public required EventCallback OnVariationProbabilityChange { get; set; }
 }
