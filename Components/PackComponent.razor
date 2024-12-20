@@ -1,7 +1,14 @@
 ﻿@using VariationPackCreator.Models
 @inject IJSRuntime JsRuntime
+
 <h3>
-    <input type="text" @bind="Pack.Name" />
+    <label for="packName">Pack Name</label>
+    <input id="packName" type="text" @bind="Pack.Name" />
+</h3>
+
+<h3>
+    <input type="checkbox" id="usePrefabDefaults" @bind="usePrefabDefaults" />
+    <label for="usePrefabDefaults">Use Vanilla Color Variations as Preset for new Prefab (otherwise Yellow, Magenta, Green will be used)</label>
 </h3>
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -17,6 +24,8 @@
     [Parameter] public required Pack Pack { get; set; }
     [Parameter] public required Pack VanillaPack { get; set; }
 
+    public bool usePrefabDefaults = true;
+
     // Methode zum Hinzufügen eines neuen Prefabs
     private void AddNewPrefab(string name)
     {
@@ -25,15 +34,22 @@
             Pack.Entries[name] = new List<Variation>();
             if (VanillaPack.Entries.ContainsKey(name))
             {
-                foreach (Variation variation in VanillaPack.Entries[name])
+                if (usePrefabDefaults)
                 {
-                    Pack.Entries[name].Add(new Variation
+                    foreach (Variation variation in VanillaPack.Entries[name])
                     {
-                        Color1 = variation.Color1,
-                        Color2 = variation.Color2,
-                        Color3 = variation.Color3,
-                        Probability = variation.Probability
-                    });
+                        Pack.Entries[name].Add(new Variation
+                        {
+                            Color1 = variation.Color1,
+                            Color2 = variation.Color2,
+                            Color3 = variation.Color3,
+                            Probability = variation.Probability
+                        });
+                    }
+                }
+                else
+                {
+                    Pack.Entries[name].Add(new Variation());
                 }
             }
         }
