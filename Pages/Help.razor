@@ -6,63 +6,7 @@
     It is designed to be easy to use and powerful enough for advanced customization.
 </p>
 
-<h1 id="HowtoUse">How to use</h1>
-
-<b>Note: The server does not save any data. You must download your pack when you are done, otherwise the data will be lost. Do not reload the page or open another website in the same tab while editing.</b>
-<h3>Start from Scratch</h3>
-<ol>
-    <li>Choose the Empty preset</li>
-    <li>Enter a name for your pack (will be shown ingame)</li>
-    <li>Add a prefab you want to change the variations for</li>
-    <li>When adding, the prefab will have its default variations (extracted from the game) and be ready to be edited</li>
-    <li>Edit, Add or Remove variations based on your needs</li>
-    <li>Adjust probabilities: When spawning a vehicle a random variant will be chosen. The higher the probability, the higher the chance this variant gets chosen. A probability of 200 will get chosen twice as often as a probability of 100</li>
-    <li>Download your pack</li>
-    <li><a href="help/#Installing">Install your pack</a></li>
-</ol>
-
-<h3 id="Installing">Installing your Pack</h3>
-<p>Please make sure to save a copy of your pack outside of the Cities: Skylines II user folder, because sometimes the mods data get reset.</p>
-
-<h4>With Cities: Skylines II open</h4>
-<ol>
-    <li>Open the settings</li>
-    <li>Go to "Vehicle Variation Packs"</li>
-    <li>Click on "Open Packs Folder"</li>
-    <li>Put your json file in this folder</li>
-    <li>Click on "Reload available packs" in the game settings</li>
-    <li>Your pack should now show up in the list</li>
-</ol>
-
-<h4>From outside of the game</h4>
-<ol>
-    <li>Navigate to <b>C:/Users/%username%/AppData/LocalLow/Colossal Order/Cities Skylines II/ModsData/VehicleVariationPacks/packs</b></li>
-    <li>Put your json file in this folder</li>
-    <li>Start the game and your pack should be found (you still have to select it</li>
-</ol>
-
-<h3>Tips & Tricks</h3>
-
-<ul>
-    <li>Remove all vehicles from your pack, that you don't want to actively change. This allows <a href="/help#Cascading">Cascading</a> to work</li>
-    <li>Probabilities can use values from 0 to 255. If you need a higher range, you can add the same variation twice (2 * 200 = 400)</li>
-    <li>Adding multiple variants of slightly different colors for a variant makes it look more realistic ingame</li>
-</ul>
-
-<h3 id="Cascading">Cascading (Adanced)</h3>
-<p>Cascading is a technique that allows multiple variations packs to be loaded at the same time. The mod supports it but does not offer UI for it yet. This is an easy example on how it works.
-    Let's imagine the (non-existing) Variation packs <b>French Police Car Packs</b>, <b>German Service Vehicle Pack</b> and <b>NA Vehicle Variation Pack</b>. The French Pack only overwrites the police vehicles, the German Pack only the service vehicles and the NA Pack all other vehicles.
-    If you want all packs to be active at the same time, you would start in reverse order: Activate the NA Pack first, which changes ALL vehicles, then the German pack, which only changes the service vehicles and at the end the French Police Car Pack, which overwrites the Police Car Variations.
-
-    Unfortunately this has to be done at every game restart right now, because I haven't yet found out how to make a good UI for this behaviour.</p>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
+<HelpComponent/>
 
 
 

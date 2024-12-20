@@ -1,11 +1,16 @@
 ﻿@using System.IO
 @inject HttpClient Http
 
+<h1>How to use</h1>
+<p>Click <a href="/help" target="_blank">here</a> or on the <b>Help</b> button in the top right to open the instructions in a new tab.</p>
+<br>
+<br>
+<br>
 <div>
     <h4>Select a preset:</h4>
     <select @onchange="LoadPreset">
         <option value="">-- Select a preset --</option>
-        @foreach (var preset in PresetFiles)
+        @foreach (var preset in _presetFiles)
         {
             <option value="@preset">@preset</option>
         }
@@ -17,13 +22,14 @@
     </div>
 </div>
 
+
 @code {
     [Parameter] public EventCallback<string> OnPresetLoaded { get; set; }
     [Parameter] public EventCallback<string> OnFileUploaded { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
 
-    private List<string> PresetFiles = new()
-    {
+    private List<string> _presetFiles =
+    [
         "presets/Empty.json",
         "presets/Vanilla.json",
         "presets/German Vehicle Pack.json",
@@ -31,7 +37,7 @@
         "presets/Vancouver, Canada.json",
         "presets/Vanilla Rebalance.json",
         "presets/Japan.json"
-    };
+    ];
 
     private async Task LoadPreset(ChangeEventArgs e)
     {
