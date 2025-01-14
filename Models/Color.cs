@@ -5,10 +5,6 @@ namespace VariationPackCreator.Models
 {
     public class Color
     {
-        public Color()
-        {
-        }
-
         public string Hex
         {
             get => $"#{R:X2}{G:X2}{B:X2}";

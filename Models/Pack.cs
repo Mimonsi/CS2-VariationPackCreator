@@ -2,7 +2,7 @@
 {
     public class Pack
     {
-        public string Name { get; set; }
-        public Dictionary<string, List<Variation>> Entries { get; set; }
+        public required string Name { get; set; }
+        public required Dictionary<string, List<Variation>> Entries { get; init; }
     }
 }
