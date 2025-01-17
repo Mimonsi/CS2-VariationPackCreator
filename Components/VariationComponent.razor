@@ -1,30 +1,33 @@
 ﻿@using VariationPackCreator.Models
 <div class="position-relative p-3 border rounded variation-container">
     <div class="d-flex flex-column align-items-center gap-3">
-        <div class="d-flex align-items-center">
-            @if (!string.IsNullOrEmpty(VariationChance))
-            {
-                <p>Chance: @VariationChance</p>
-            }
+        <div style="display: flex;justify-content: space-evenly;margin: auto;width: 100%;">
+            <div class="d-flex align-items-center">
+                @if (!string.IsNullOrEmpty(VariationChance))
+                {
+                    <p>Chance: @VariationChance</p>
+                }
+            </div>
+            <div>
+                <label for="probability">Probability</label>
+                <input type="number" id="probability"
+                       @bind-value="ProbabilityInput"
+                       @bind-value:event="oninput"
+                       min="0" max="255" step="1" class="@ValidationClass"/>
+                @if (!string.IsNullOrEmpty(ValidationMessage))
+                {
+                    <p class="text-danger">@ValidationMessage</p>
+                }
+            </div>
+            <button @onclick="OnRemoveVariationClick" class="btn btn-danger">
+                Remove Variation
+            </button>
         </div>
-        <ColorInputComponent Component="Y" Color="@Variation.Color1" />
-        <ColorInputComponent Component="M" Color="@Variation.Color2" />
-        <ColorInputComponent Component="G" Color="@Variation.Color3" />
-
-        <div>
-            <label for="probability">Probability</label>
-            <input type="number" id="probability"
-                   @bind-value="ProbabilityInput"
-                   @bind-value:event="oninput"
-                   min="0" max="255" step="1" class="@ValidationClass" />
-            @if (!string.IsNullOrEmpty(ValidationMessage))
-            {
-                <p class="text-danger">@ValidationMessage</p>
-            }
-        </div>
-        <button @onclick="OnRemoveVariationClick" class="btn btn-danger">
-            Remove Variation
-        </button>
+    </div>
+    <div style="display: flex;justify-content: space-between;width: 100%;margin: auto;">
+        <ColorInputComponent Component="Y" Color="@Variation.Color1"/>
+        <ColorInputComponent Component="M" Color="@Variation.Color2"/>
+        <ColorInputComponent Component="G" Color="@Variation.Color3"/>
     </div>
 </div>
 

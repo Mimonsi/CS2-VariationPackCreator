@@ -13,7 +13,7 @@
             <div id="collapse-@Name" class="accordion-collapse collapse" aria-labelledby="heading-@Name" data-bs-parent="#accordion-@Name">
                 <div class="accordion-body gap-1">
                     <button class="btn btn-outline-danger remove-prefab-button" onclick="@RemovePrefab">Remove Prefab</button>
-                    <div class="variation-list">
+                    <div class="variation-list d-flex flex-column">
                         @foreach (var variation in Variations)
                         {
                             <VariationComponent OnRemoveVariationClick="@(() => RemoveVariation(variation))" Variation="@variation" VariationChance="@GetVariationChance(variation)" OnVariationProbabilityChange="@OnVariationProbabilityChange"/>
