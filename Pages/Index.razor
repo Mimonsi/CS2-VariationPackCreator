@@ -101,6 +101,7 @@ else
             Converters = { new ColorConverter() }
         };
         string json = JsonSerializer.Serialize(CurrentPack, options);
+        Telemetry.DownloadPack(CurrentPack.Name);
         await JsRuntime.InvokeVoidAsync("downloadJson", json, CurrentPack.Name + ".json");
     }
 }

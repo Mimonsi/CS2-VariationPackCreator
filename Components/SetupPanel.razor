@@ -38,6 +38,13 @@
         "presets/Vanilla Rebalance.json",
         "presets/Japan.json"
     ];
+    
+    // On website load
+    protected override Task OnInitializedAsync()
+    {
+        Telemetry.EnterWebsite();
+        return Task.CompletedTask;
+    }
 
     private async Task LoadPreset(ChangeEventArgs e)
     {
@@ -47,6 +54,7 @@
             try
             {
                 var presetJson = await Http.GetStringAsync(selectedPreset);
+                Telemetry.StartWithTemplate(selectedPreset);
                 await OnPresetLoaded.InvokeAsync(presetJson);
             }
             catch (Exception ex)
