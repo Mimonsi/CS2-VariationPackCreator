@@ -3,7 +3,7 @@
 public static class Telemetry
 {
     private static HttpClient _httpClient;
-    private static string baseUrl = "http://telemetry.mimonsi.de:5005";
+    private static string baseUrl = "https://telemetry.mimonsi.de";
     
     static Telemetry()
     {
