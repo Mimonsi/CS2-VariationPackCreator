@@ -1,19 +1,14 @@
 @using Microsoft.AspNetCore.Components
 @using VariationPackCreator.Models
 
-<div class="color-input-group">
+<div class="color-row">
     <span class="color-label">@Label</span>
-    <div class="color-controls">
-        <input type="color" @bind="Color.HexRgb" class="color-picker" title="Pick color" />
-        <input type="text" @bind="Color.Hex" class="form-control form-control-sm color-hex-input"
-               placeholder="#RRGGBB" />
-        <div class="alpha-control" title="Opacity">
-            <label class="alpha-label">A</label>
-            <input type="range" min="0" max="255" @bind="Color.A" @bind:event="oninput"
-                   class="alpha-slider" />
-            <span class="alpha-value">@Color.A</span>
-        </div>
-    </div>
+    <input type="color" @bind="Color.HexRgb" class="color-picker" title="Pick color" />
+    <input type="text" @bind="Color.Hex" class="form-control form-control-sm color-hex-input"
+           placeholder="#RRGGBB" />
+    <input type="range" min="0" max="255" @bind="Color.A" @bind:event="oninput"
+           class="alpha-slider" title="Opacity" />
+    <span class="alpha-value">@Color.A</span>
 </div>
 
 @code {

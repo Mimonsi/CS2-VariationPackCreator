@@ -274,38 +274,32 @@ a:hover { color: var(--color-primary-hover); }
 .variation-colors {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.35rem;
 }
 
-.color-input-group {
+.color-row {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    flex-wrap: wrap;
 }
 
 .color-label {
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--color-text-muted);
-    min-width: 50px;
-}
-
-.color-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-wrap: wrap;
+    width: 48px;
+    flex-shrink: 0;
 }
 
 .color-picker {
-    width: 36px;
-    height: 30px;
+    width: 32px;
+    height: 28px;
     padding: 1px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     cursor: pointer;
     background: none;
+    flex-shrink: 0;
 }
 
 .color-picker::-webkit-color-swatch-wrapper {
@@ -318,26 +312,18 @@ a:hover { color: var(--color-primary-hover); }
 }
 
 .color-hex-input {
-    width: 110px;
+    width: 105px !important;
+    min-width: 105px;
+    max-width: 105px;
+    flex: 0 0 105px;
     font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
     font-size: 0.8rem;
     letter-spacing: 0.02em;
 }
 
-.alpha-control {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.8rem;
-}
-
-.alpha-label {
-    color: var(--color-text-muted);
-    font-weight: 600;
-}
-
 .alpha-slider {
-    width: 60px;
+    width: 56px;
+    flex-shrink: 0;
     height: 4px;
     accent-color: var(--color-primary);
     cursor: pointer;
@@ -347,7 +333,8 @@ a:hover { color: var(--color-primary-hover); }
     font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
     font-size: 0.75rem;
     color: var(--color-text-muted);
-    min-width: 24px;
+    width: 24px;
+    flex-shrink: 0;
     text-align: right;
 }
 

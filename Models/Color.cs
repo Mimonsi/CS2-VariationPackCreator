@@ -106,6 +106,7 @@ namespace VariationPackCreator.Models
 
         public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
         {
+            // TODO: Remove if if alpha should always be written
             if (value.HasAlpha)
                 writer.WriteStringValue($"{value.R:X2}{value.G:X2}{value.B:X2}{value.A:X2}");
             else
