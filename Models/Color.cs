@@ -60,6 +60,11 @@ namespace VariationPackCreator.Models
         public int A { get; set; } = 255;
 
         public bool HasAlpha => A < 255;
+
+        /// <summary>
+        /// Creates a deep copy of this color instance.
+        /// </summary>
+        public Color Clone() => new() { R = R, G = G, B = B, A = A };
     }
 
 
@@ -106,11 +111,8 @@ namespace VariationPackCreator.Models
 
         public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
         {
-            // TODO: Remove if if alpha should always be written
-            if (value.HasAlpha)
-                writer.WriteStringValue($"{value.R:X2}{value.G:X2}{value.B:X2}{value.A:X2}");
-            else
-                writer.WriteStringValue($"{value.R:X2}{value.G:X2}{value.B:X2}");
+            // Always include alpha channel in output
+            writer.WriteStringValue($"{value.R:X2}{value.G:X2}{value.B:X2}{value.A:X2}");
         }
     }
 }

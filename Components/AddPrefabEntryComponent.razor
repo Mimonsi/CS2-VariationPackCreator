@@ -96,7 +96,7 @@
 
     private void OnCustomPrefabNameChange(ChangeEventArgs e)
     {
-        _useCustomPrefabName = (bool)e.Value;
+        _useCustomPrefabName = e.Value is true;
         if (_useCustomPrefabName)
             _selectedPrefabKey = string.Empty;
     }

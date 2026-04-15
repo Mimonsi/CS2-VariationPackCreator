@@ -10,6 +10,14 @@
             <a href="/help" target="_blank">Need help?</a>
         </p>
 
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                <span class="me-2">⚠</span>
+                <div>@ErrorMessage</div>
+            </div>
+        }
+
         <div class="mb-4">
             <label class="form-label fw-bold">Select a preset</label>
             <select class="form-select" @onchange="LoadPreset">
@@ -36,6 +44,7 @@
     [Parameter] public EventCallback<string> OnPresetLoaded { get; set; }
     [Parameter] public EventCallback<string> OnFileUploaded { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public string? ErrorMessage { get; set; }
 
     private record PresetEntry(string Name, string Path);
 

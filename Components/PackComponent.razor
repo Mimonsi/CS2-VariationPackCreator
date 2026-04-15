@@ -41,15 +41,10 @@
 
         if (usePrefabDefaults && VanillaPack.Entries.ContainsKey(name))
         {
+            // Deep copy variations to avoid mutating the vanilla preset data
             foreach (var variation in VanillaPack.Entries[name])
             {
-                Pack.Entries[name].Add(new Variation
-                {
-                    Color1 = variation.Color1,
-                    Color2 = variation.Color2,
-                    Color3 = variation.Color3,
-                    Probability = variation.Probability
-                });
+                Pack.Entries[name].Add(variation.Clone());
             }
         }
         else

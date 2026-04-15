@@ -7,9 +7,9 @@
 
 @if (ShowSetup)
 {
-    <SetupPanel OnPresetLoaded="LoadJson" OnFileUploaded="LoadJson" OnClose="() => ShowSetup = false" />
+    <SetupPanel OnPresetLoaded="LoadJson" OnFileUploaded="LoadJson" OnClose="() => ShowSetup = false" ErrorMessage="@ErrorMessage" />
 }
-else
+else if (CurrentPack is not null && VanillaPack is not null)
 {
     <div class="toolbar">
         <button class="btn btn-outline-danger btn-sm" @onclick="ConfirmStartFromScratch">
@@ -38,9 +38,10 @@ else
 }
 
 @code {
-    private Pack CurrentPack { get; set; }
-    private Pack VanillaPack { get; set; }
+    private Pack? CurrentPack { get; set; }
+    private Pack? VanillaPack { get; set; }
     private bool ShowSetup = true;
+    private string? ErrorMessage { get; set; }
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -62,20 +63,33 @@ else
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+            Console.WriteLine($"Error loading vanilla prefabs: {ex.Message}");
         }
     }
 
     private async Task LoadJson(string json)
     {
+        ErrorMessage = null;
         try
         {
-            CurrentPack = JsonSerializer.Deserialize<Pack>(json, JsonOptions);
+            var pack = JsonSerializer.Deserialize<Pack>(json, JsonOptions);
+            if (pack is null)
+            {
+                ErrorMessage = "Failed to parse the JSON file. The file may be empty or malformed.";
+                return;
+            }
+            CurrentPack = pack;
             ShowSetup = false;
+        }
+        catch (JsonException ex)
+        {
+            ErrorMessage = $"Invalid JSON format: {ex.Message}";
+            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+            ErrorMessage = $"Failed to load pack: {ex.Message}";
+            Console.WriteLine($"Error loading pack: {ex.Message}");
         }
     }
 
@@ -85,11 +99,15 @@ else
         if (confirmed)
         {
             ShowSetup = true;
+            CurrentPack = null;
+            ErrorMessage = null;
         }
     }
 
     private async Task DownloadPack()
     {
+        if (CurrentPack is null) return;
+
         var exportOptions = new JsonSerializerOptions()
         {
             WriteIndented = true,
