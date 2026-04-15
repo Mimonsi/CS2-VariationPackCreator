@@ -1,14 +1,22 @@
-﻿@using VariationPackCreator.Models
-@code {
-    [Parameter] public Color Color { get; set; }  // With [Parameter] to bind the value
-    [Parameter] public String Component { get; set; }
-}
+@using Microsoft.AspNetCore.Components
+@using VariationPackCreator.Models
 
-<div class="d-flex align-items-center">
-    <!-- Color Picker -->
-    <b>@(Component)⇒</b>
-    <input type="color" @bind="Color.Hex" class="me-2" />
-
-    <!-- Hex Text Box -->
-    <input type="text" @bind="Color.Hex" class="form-control" style="max-width: 120px;" />
+<div class="color-input-group">
+    <span class="color-label">@Label</span>
+    <div class="color-controls">
+        <input type="color" @bind="Color.HexRgb" class="color-picker" title="Pick color" />
+        <input type="text" @bind="Color.Hex" class="form-control form-control-sm color-hex-input"
+               placeholder="#RRGGBB" />
+        <div class="alpha-control" title="Opacity">
+            <label class="alpha-label">A</label>
+            <input type="range" min="0" max="255" @bind="Color.A" @bind:event="oninput"
+                   class="alpha-slider" />
+            <span class="alpha-value">@Color.A</span>
+        </div>
+    </div>
 </div>
+
+@code {
+    [Parameter] public Color Color { get; set; }
+    [Parameter] public string Label { get; set; } = "";
+}

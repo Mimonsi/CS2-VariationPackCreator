@@ -5,31 +5,51 @@ namespace VariationPackCreator.Models
 {
     public class Color
     {
+        /// <summary>
+        /// Full hex string including alpha: #RRGGBBAA
+        /// </summary>
         public string Hex
         {
             get => $"#{R:X2}{G:X2}{B:X2}{A:X2}";
             set
             {
-                // Hier wird der Hex-Wert geparsed und die RGB-Werte gesetzt.
-                if (value.StartsWith("#"))
+                if (!value.StartsWith("#"))
+                    throw new ArgumentException($"Invalid color format: must start with #");
+
+                if (value.Length == 7)
                 {
-                    if (value.Length == 7)
-                    {
-                        R = Convert.ToInt32(value.Substring(1, 2), 16);
-                        G = Convert.ToInt32(value.Substring(3, 2), 16);
-                        B = Convert.ToInt32(value.Substring(5, 2), 16);
-                    }
-                    else if (value.Length == 9)
-                    {
-                        R = Convert.ToInt32(value.Substring(1, 2), 16);
-                        G = Convert.ToInt32(value.Substring(3, 2), 16);
-                        B = Convert.ToInt32(value.Substring(5, 2), 16);
-                        A = Convert.ToInt32(value.Substring(7, 2), 16);
-                    }
+                    R = Convert.ToInt32(value.Substring(1, 2), 16);
+                    G = Convert.ToInt32(value.Substring(3, 2), 16);
+                    B = Convert.ToInt32(value.Substring(5, 2), 16);
+                    A = 255;
+                }
+                else if (value.Length == 9)
+                {
+                    R = Convert.ToInt32(value.Substring(1, 2), 16);
+                    G = Convert.ToInt32(value.Substring(3, 2), 16);
+                    B = Convert.ToInt32(value.Substring(5, 2), 16);
+                    A = Convert.ToInt32(value.Substring(7, 2), 16);
                 }
                 else
                 {
-                    throw new ArgumentException($"Invalid color format: Length {value.Length} is not supported, must be 7 or 9");
+                    throw new ArgumentException($"Invalid color format: length {value.Length} not supported, must be 7 (#RRGGBB) or 9 (#RRGGBBAA)");
+                }
+            }
+        }
+
+        /// <summary>
+        /// RGB-only hex for the HTML color picker: #RRGGBB
+        /// </summary>
+        public string HexRgb
+        {
+            get => $"#{R:X2}{G:X2}{B:X2}";
+            set
+            {
+                if (value.StartsWith("#") && value.Length == 7)
+                {
+                    R = Convert.ToInt32(value.Substring(1, 2), 16);
+                    G = Convert.ToInt32(value.Substring(3, 2), 16);
+                    B = Convert.ToInt32(value.Substring(5, 2), 16);
                 }
             }
         }
@@ -38,6 +58,8 @@ namespace VariationPackCreator.Models
         public int G { get; set; }
         public int B { get; set; }
         public int A { get; set; } = 255;
+
+        public bool HasAlpha => A < 255;
     }
 
 
@@ -47,7 +69,7 @@ namespace VariationPackCreator.Models
         {
             var colorString = reader.GetString();
 
-            if (string.IsNullOrEmpty(colorString) || colorString.Length != 6)
+            if (string.IsNullOrEmpty(colorString) || (colorString.Length != 6 && colorString.Length != 8))
             {
                 Console.WriteLine($"Invalid color: {colorString}");
                 return new Color();
@@ -55,27 +77,24 @@ namespace VariationPackCreator.Models
 
             try
             {
-                // Additional alpha channel is supported
                 if (colorString.Length == 8)
                 {
-                    var colorParts = new[]
+                    return new Color
                     {
-                        Convert.ToInt32(colorString.Substring(0, 2), 16),
-                        Convert.ToInt32(colorString.Substring(2, 2), 16),
-                        Convert.ToInt32(colorString.Substring(4, 2), 16),
-                        Convert.ToInt32(colorString.Substring(6, 2), 16)
+                        R = Convert.ToInt32(colorString.Substring(0, 2), 16),
+                        G = Convert.ToInt32(colorString.Substring(2, 2), 16),
+                        B = Convert.ToInt32(colorString.Substring(4, 2), 16),
+                        A = Convert.ToInt32(colorString.Substring(6, 2), 16)
                     };
-                    return new Color { R = colorParts[0], G = colorParts[1], B = colorParts[2], A = colorParts[3]};
                 }
                 else
                 {
-                    var colorParts = new[]
+                    return new Color
                     {
-                        Convert.ToInt32(colorString.Substring(0, 2), 16),
-                        Convert.ToInt32(colorString.Substring(2, 2), 16),
-                        Convert.ToInt32(colorString.Substring(4, 2), 16),
+                        R = Convert.ToInt32(colorString.Substring(0, 2), 16),
+                        G = Convert.ToInt32(colorString.Substring(2, 2), 16),
+                        B = Convert.ToInt32(colorString.Substring(4, 2), 16)
                     };
-                    return new Color { R = colorParts[0], G = colorParts[1], B = colorParts[2]};
                 }
             }
             catch (Exception ex)
@@ -87,9 +106,10 @@ namespace VariationPackCreator.Models
 
         public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
         {
-            // Write hex without #
-            writer.WriteStringValue(value.Hex.Replace("#", ""));
+            if (value.HasAlpha)
+                writer.WriteStringValue($"{value.R:X2}{value.G:X2}{value.B:X2}{value.A:X2}");
+            else
+                writer.WriteStringValue($"{value.R:X2}{value.G:X2}{value.B:X2}");
         }
     }
-
 }
