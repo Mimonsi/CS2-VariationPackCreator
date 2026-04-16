@@ -48,11 +48,11 @@
 
     private record PresetEntry(string Name, string Path);
 
-    private List<PresetEntry> _presetFiles =
+    private readonly List<PresetEntry> _presetFiles =
     [
         new("Empty", "presets/Empty.json"),
-        new("Vanilla", "presets/Vanilla.json"),
         new("Vanilla 1.3.6f1", "presets/Vanilla 1.3.6f1.json"),
+        new("Vanilla 1.5.6f1", "presets/Vanilla 1.5.6f1.json"),
         new("German Vehicle Pack", "presets/German Vehicle Pack.json"),
         new("Realistic Global", "presets/Realistic Global.json"),
         new("Vancouver, Canada", "presets/Vancouver, Canada.json"),
