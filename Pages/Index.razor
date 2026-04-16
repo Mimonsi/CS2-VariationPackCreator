@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using System.Text.Json
 @using VariationPackCreator.Models
 @using VariationPackCreator.Components
@@ -7,18 +7,24 @@
 
 @if (ShowSetup)
 {
-    <SetupPanel OnPresetLoaded="LoadJson" OnFileUploaded="LoadJson" OnClose="() => ShowSetup = false" />
+    <SetupPanel OnPresetLoaded="LoadJson" OnFileUploaded="LoadJson" OnClose="() => ShowSetup = false" ErrorMessage="@ErrorMessage" />
 }
-else
+else if (CurrentPack is not null && VanillaPack is not null)
 {
-    <button class="btn btn-danger" @onclick="ConfirmStartFromScratch" style="margin-top: 20px;">Start from Scratch</button>
-    <button class="btn btn-primary" @onclick="DownloadPack" style="margin-top: 20px;">Download my Pack</button>
-    <div style="margin-top: 20px;" class="loaded-section">
+    <div class="toolbar">
+        <button class="btn btn-outline-danger btn-sm" @onclick="ConfirmStartFromScratch">
+            Start from Scratch
+        </button>
+        <button class="btn btn-primary" @onclick="DownloadPack">
+            Download Pack
+        </button>
+    </div>
+
+    <div class="pack-editor">
         <PackComponent Pack="@CurrentPack" VanillaPack="@VanillaPack" />
     </div>
 
-    <!-- JavaScript-Funktion zum Herunterladen der JSON-Datei -->
-    <script>
+    <script suppress-error="BL9992">
         function downloadJson(jsonData, fileName) {
             const blob = new Blob([jsonData], { type: 'application/json' });
             const link = document.createElement('a');
@@ -32,10 +38,16 @@ else
 }
 
 @code {
-    private Pack CurrentPack { get; set; }
-    private Pack VanillaPack { get; set; }
-    private string LoadedJson = "";
+    private Pack? CurrentPack { get; set; }
+    private Pack? VanillaPack { get; set; }
     private bool ShowSetup = true;
+    private string? ErrorMessage { get; set; }
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        Converters = { new ColorConverter() },
+        PropertyNameCaseInsensitive = true
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,63 +56,64 @@ else
 
     private async Task LoadAvailablePrefabs()
     {
-        var options = new JsonSerializerOptions
-        {
-            Converters = { new ColorConverter() },
-            PropertyNameCaseInsensitive = true
-        };
-
         try
         {
             var json = await Http.GetStringAsync("presets/Vanilla.json");
-            VanillaPack = JsonSerializer.Deserialize<Pack>(json, options);
+            VanillaPack = JsonSerializer.Deserialize<Pack>(json, JsonOptions);
         }
         catch (Exception ex)
         {
-            // Fehlerbehandlung
-            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+            Console.WriteLine($"Error loading vanilla prefabs: {ex.Message}");
         }
-
     }
 
     private async Task LoadJson(string json)
     {
-        var options = new JsonSerializerOptions
-        {
-            Converters = { new ColorConverter() },
-            PropertyNameCaseInsensitive = true
-        };
-
+        ErrorMessage = null;
         try
         {
-            CurrentPack = JsonSerializer.Deserialize<Pack>(json, options);
+            var pack = JsonSerializer.Deserialize<Pack>(json, JsonOptions);
+            if (pack is null)
+            {
+                ErrorMessage = "Failed to parse the JSON file. The file may be empty or malformed.";
+                return;
+            }
+            CurrentPack = pack;
             ShowSetup = false;
+        }
+        catch (JsonException ex)
+        {
+            ErrorMessage = $"Invalid JSON format: {ex.Message}";
+            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
         }
         catch (Exception ex)
         {
-            // Fehlerbehandlung
-            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+            ErrorMessage = $"Failed to load pack: {ex.Message}";
+            Console.WriteLine($"Error loading pack: {ex.Message}");
         }
     }
 
     private async Task ConfirmStartFromScratch()
     {
-        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure? All data will be lost!");
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure? All unsaved changes will be lost!");
         if (confirmed)
         {
             ShowSetup = true;
-            LoadedJson = "";
+            CurrentPack = null;
+            ErrorMessage = null;
         }
     }
 
     private async Task DownloadPack()
     {
-        var options = new JsonSerializerOptions()
+        if (CurrentPack is null) return;
+
+        var exportOptions = new JsonSerializerOptions()
         {
             WriteIndented = true,
             Converters = { new ColorConverter() }
         };
-        string json = JsonSerializer.Serialize(CurrentPack, options);
+        string json = JsonSerializer.Serialize(CurrentPack, exportOptions);
         Telemetry.DownloadPack(CurrentPack.Name);
         await JsRuntime.InvokeVoidAsync("downloadJson", json, CurrentPack.Name + ".json");
     }

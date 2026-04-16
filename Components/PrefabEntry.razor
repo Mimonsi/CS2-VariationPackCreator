@@ -1,28 +1,40 @@
-﻿@using VariationPackCreator.Models
+@using Microsoft.AspNetCore.Components
+@using VariationPackCreator.Models
+
 <div class="col">
-    <div class="accordion" id="accordion-@Name">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="heading-@Name">
-                <button class="accordion-button prefab-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@Name" aria-expanded="true" aria-controls="collapse-@Name">
-                    <div class="prefab-image-container">
-                        <img src="@GetThumbnail(Name)"  alt="@Name" class="prefab-image-large" onerror="this.onerror=null;this.src='images/custom.png';" />
-                    </div>
-                    <h5 class="prefab-text">@Name</h5>
+    <div class="prefab-card">
+        <div class="prefab-header" @onclick="ToggleExpanded" role="button">
+            <div class="prefab-thumbnail">
+                <img src="@GetThumbnail(Name)" alt="@Name" class="prefab-image"
+                     onerror="this.onerror=null;this.src='images/custom.png';" />
+            </div>
+            <div class="prefab-title-area">
+                <h5 class="prefab-name">@Name</h5>
+                <span class="prefab-count text-muted">@Variations.Count variation@(Variations.Count != 1 ? "s" : "")</span>
+            </div>
+            <span class="expand-icon">@(IsExpanded ? "▾" : "▸")</span>
+        </div>
+
+        @if (IsExpanded)
+        {
+            <div class="prefab-body">
+                <button class="btn btn-sm btn-outline-danger w-100 mb-3" @onclick="RemovePrefab">
+                    Remove Prefab
                 </button>
-            </h2>
-            <div id="collapse-@Name" class="accordion-collapse collapse" aria-labelledby="heading-@Name" data-bs-parent="#accordion-@Name">
-                <div class="accordion-body gap-1">
-                    <button class="btn btn-outline-danger remove-prefab-button" onclick="@RemovePrefab">Remove Prefab</button>
-                    <div class="variation-list d-flex flex-column">
-                        @foreach (var variation in Variations)
-                        {
-                            <VariationComponent OnRemoveVariationClick="@(() => RemoveVariation(variation))" Variation="@variation" VariationChance="@GetVariationChance(variation)" OnVariationProbabilityChange="@OnVariationProbabilityChange"/>
-                        }
-                        <AddVariationComponent OnAddVariationClick="@AddVariation"/>
-                    </div>
+
+                <div class="variation-list">
+                    @foreach (var variation in Variations)
+                    {
+                        <VariationComponent
+                            OnRemoveVariationClick="@(() => RemoveVariation(variation))"
+                            Variation="@variation"
+                            VariationChance="@GetVariationChance(variation)"
+                            OnVariationProbabilityChange="@OnVariationProbabilityChange" />
+                    }
+                    <AddVariationComponent OnAddVariationClick="@AddVariation" />
                 </div>
             </div>
-        </div>
+        }
     </div>
 </div>
 
@@ -31,19 +43,21 @@
     [Parameter] public required List<Variation> Variations { get; set; }
     [Parameter] public EventCallback<string> OnRemovePrefabClick { get; set; }
 
+    private bool IsExpanded { get; set; } = false;
+
+    private void ToggleExpanded()
+    {
+        IsExpanded = !IsExpanded;
+    }
+
     public string GetVariationChance(Variation variation)
     {
         if (Variations.Count < 2)
-        {
             return string.Empty;
-        }
 
-        int sum = 0;
-        for (int i = 0; i < Variations.Count; i++)
-        {
-            sum += Variations[i].Probability;
-        }
-        double chance = ((double) variation.Probability / (double) sum) * 100;
+        int sum = Variations.Sum(v => v.Probability);
+        if (sum == 0) return "0%";
+        double chance = (double)variation.Probability / sum * 100;
         return $"{chance:0.##}%";
     }
 
@@ -60,7 +74,6 @@
     private string GetThumbnail(string name)
     {
         return $"thumbnailsDynamic/{name}.png";
-        //return $"thumbnails/{name}.png";
     }
 
     private void RemoveVariation(Variation variation)

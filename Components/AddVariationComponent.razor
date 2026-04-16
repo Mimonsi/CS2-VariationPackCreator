@@ -1,8 +1,7 @@
-﻿<div class="variation-container">
-    <button class="btn btn-primary w-100 h-100 border-0" @onclick="OnAddVariationClick" style="font-size: 2rem;">
-        +
-    </button>
-</div>
+@using Microsoft.AspNetCore.Components
+<button class="btn btn-outline-primary w-100 add-variation-btn" @onclick="OnAddVariationClick">
+    + Add Variation
+</button>
 
 @code {
     [Parameter] public required EventCallback OnAddVariationClick { get; set; }
