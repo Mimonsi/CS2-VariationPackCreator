@@ -3,7 +3,7 @@ name: Deploy Car Variation Packs
 on:
   push:
     branches:
-      - main  # Trigger beim Push auf den Branch `release`
+      - main
 
 jobs:
   deploy:
@@ -11,15 +11,15 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0'  # Passe die Version an deine Anwendung an
+          dotnet-version: '8.0'
 
       - name: Build Blazor App
-        run: dotnet publish -c Release -o release
+        run: dotnet publish VariationPackCreator.csproj -c Release -o release
 
       - name: Deploy to Server
         uses: appleboy/scp-action@v0.1.7
@@ -28,7 +28,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
           source: ./release/*
-          target: /opt/variationPackCreator/  # Zielverzeichnis auf dem Server
+          target: /opt/variationPackCreator/
 
       - name: Reload Nginx
         uses: appleboy/ssh-action@v0.1.7
